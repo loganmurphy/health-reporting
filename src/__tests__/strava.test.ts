@@ -108,7 +108,7 @@ describe("fetchActivities", () => {
   })
 
   it("uses STRAVA_REFRESH_TOKEN env fallback when KV has no refresh token", async () => {
-    const kv = makeMockKv(makeExpiredCachedToken(), null)
+    const kv = makeMockKv(makeExpiredCachedToken(), undefined)
     const env = makeEnv({
       OAUTH_KV: kv as unknown as KVNamespace,
       STRAVA_REFRESH_TOKEN: "env_fallback_token",
@@ -121,13 +121,13 @@ describe("fetchActivities", () => {
     await fetchActivities(env, 1700000000, 1700086400)
 
     // Should have called refresh endpoint with env fallback
-    const refreshCall = mockFetch.mock.calls[0]
+    const refreshCall = mockFetch.mock.calls[0]!
     const body = JSON.parse(refreshCall[1].body as string)
     expect(body.refresh_token).toBe("env_fallback_token")
   })
 
   it("throws when no refresh token at all", async () => {
-    const kv = makeMockKv(makeExpiredCachedToken(), null)
+    const kv = makeMockKv(makeExpiredCachedToken(), undefined)
     const env = makeEnv({
       OAUTH_KV: kv as unknown as KVNamespace,
       STRAVA_REFRESH_TOKEN: "",
@@ -166,13 +166,13 @@ describe("fetchActivities", () => {
     // 1609.34 meters = 1 mile
     mockFetch.mockResolvedValueOnce(
       makeActivitiesResponse([
-        { id: 1, name: "Run", sport_type: "Run", distance: 1609.34, moving_time: 300, map: null },
+        { id: 1, name: "Run", sport_type: "Run", distance: 1609.34, moving_time: 300, map: undefined as unknown as { id: string } },
       ]),
     )
 
     const result = await fetchActivities(env, 1700000000, 1700086400)
-    expect(result[0]["distance_miles"]).toBe(1)
-    expect(result[0]).not.toHaveProperty("distance")
+    expect(result[0]!["distance_miles"]).toBe(1)
+    expect(result[0]!).not.toHaveProperty("distance")
   })
 
   it("retries on 429, then succeeds", async () => {
@@ -274,7 +274,7 @@ describe("fetchActivity", () => {
     })
 
     await fetchActivity(env, 99)
-    const url = mockFetch.mock.calls[0][0] as string
+    const url = mockFetch.mock.calls[0]![0] as string
     expect(url).toContain("/activities/99")
   })
 })
@@ -332,7 +332,7 @@ describe("convertDistances edge cases", () => {
     })
 
     const result = await fetchActivities(env, 1700000000, 1700086400)
-    expect(result[0]).not.toHaveProperty("distance")
+    expect(result[0]!).not.toHaveProperty("distance")
     expect(result[0]).not.toHaveProperty("distance_miles")
   })
 
@@ -346,7 +346,7 @@ describe("convertDistances edge cases", () => {
     })
 
     const result = await fetchActivities(env, 1700000000, 1700086400)
-    expect(result[0]["distance_miles"]).toBe(0)
+    expect(result[0]!["distance_miles"]).toBe(0)
   })
 })
 

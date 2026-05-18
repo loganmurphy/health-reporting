@@ -41,7 +41,7 @@ describe("Oura API fetch functions", () => {
       mockFetch.mockResolvedValue(makeOkResponse(sampleResponse))
       const result = await fetchDailySleep("token123", "2025-01-10", "2025-01-15")
       expect(mockFetch).toHaveBeenCalledOnce()
-      const url = mockFetch.mock.calls[0][0] as string
+      const url = mockFetch.mock.calls[0]![0] as string
       expect(url).toContain("/daily_sleep")
       expect(url).toContain("start_date=2025-01-10")
       expect(url).toContain("end_date=2025-01-15")
@@ -51,7 +51,7 @@ describe("Oura API fetch functions", () => {
     it("sends Authorization header with Bearer token", async () => {
       mockFetch.mockResolvedValue(makeOkResponse(sampleResponse))
       await fetchDailySleep("mytoken", "2025-01-01", "2025-01-02")
-      const options = mockFetch.mock.calls[0][1] as RequestInit
+      const options = mockFetch.mock.calls[0]![1] as RequestInit
       expect((options.headers as Record<string, string>)["Authorization"]).toBe("Bearer mytoken")
     })
   })
@@ -60,7 +60,7 @@ describe("Oura API fetch functions", () => {
     it("calls correct path", async () => {
       mockFetch.mockResolvedValue(makeOkResponse(sampleResponse))
       await fetchDailyReadiness("token", "2025-01-10", "2025-01-15")
-      const url = mockFetch.mock.calls[0][0] as string
+      const url = mockFetch.mock.calls[0]![0] as string
       expect(url).toContain("/daily_readiness")
     })
   })
@@ -69,7 +69,7 @@ describe("Oura API fetch functions", () => {
     it("calls correct path", async () => {
       mockFetch.mockResolvedValue(makeOkResponse(sampleResponse))
       await fetchDailySpO2("token", "2025-01-10", "2025-01-15")
-      const url = mockFetch.mock.calls[0][0] as string
+      const url = mockFetch.mock.calls[0]![0] as string
       expect(url).toContain("/daily_spo2")
     })
   })
@@ -78,7 +78,7 @@ describe("Oura API fetch functions", () => {
     it("calls correct path", async () => {
       mockFetch.mockResolvedValue(makeOkResponse(sampleResponse))
       await fetchWorkouts("token", "2025-01-10", "2025-01-15")
-      const url = mockFetch.mock.calls[0][0] as string
+      const url = mockFetch.mock.calls[0]![0] as string
       expect(url).toContain("/workout")
     })
   })
@@ -87,7 +87,7 @@ describe("Oura API fetch functions", () => {
     it("calls correct path", async () => {
       mockFetch.mockResolvedValue(makeOkResponse(sampleResponse))
       await fetchDailyActivity("token", "2025-01-10", "2025-01-15")
-      const url = mockFetch.mock.calls[0][0] as string
+      const url = mockFetch.mock.calls[0]![0] as string
       expect(url).toContain("/daily_activity")
     })
   })

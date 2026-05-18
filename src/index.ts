@@ -15,7 +15,7 @@ interface Env {
 }
 
 export default {
-  async fetch(): Promise<Response> {
+  async fetch(_request: Request, _env: Env, _ctx: ExecutionContext): Promise<Response> {
     return new Response(null, { status: 404 })
   },
 

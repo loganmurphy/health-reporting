@@ -87,12 +87,12 @@ const detailedActivity = {
   weighted_average_watts: 260,
 }
 
-function setupMocks(overrides?: {
-  sleepData?: typeof sleepData
-  readinessData?: typeof readinessData
-  spo2Data?: typeof spo2Data
-  weekActivities?: typeof weekActivities
-  detailedActivity?: typeof detailedActivity | null
+function setupMocks(overrides?: { // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sleepData?: Record<string, unknown>[]
+  readinessData?: Record<string, unknown>[]
+  spo2Data?: Record<string, unknown>[]
+  weekActivities?: Record<string, unknown>[]
+  detailedActivity?: Record<string, unknown> | null
 }) {
   vi.mocked(oura.fetchDailySleep).mockResolvedValue({
     data: (overrides?.sleepData ?? sleepData) as Record<string, unknown>[],

@@ -35,7 +35,7 @@ describe("sendEmail", () => {
     mockFetch.mockResolvedValue({ ok: true })
     await sendEmail(config, "Subject", "<p>Fragment</p>")
 
-    const body = JSON.parse(mockFetch.mock.calls[0][1].body as string)
+    const body = JSON.parse(mockFetch.mock.calls[0]![1].body as string)
     expect(body.html).toContain("<!DOCTYPE html>")
   })
 
@@ -43,7 +43,7 @@ describe("sendEmail", () => {
     mockFetch.mockResolvedValue({ ok: true })
     await sendEmail(config, "Subject", "<p>Fragment</p>")
 
-    const body = JSON.parse(mockFetch.mock.calls[0][1].body as string)
+    const body = JSON.parse(mockFetch.mock.calls[0]![1].body as string)
     expect(body.html).toContain('class="card"')
     expect(body.html).toContain("<p>Fragment</p>")
   })
@@ -52,7 +52,7 @@ describe("sendEmail", () => {
     mockFetch.mockResolvedValue({ ok: true })
     await sendEmail(config, "Subject", "<p>Fragment</p>")
 
-    const body = JSON.parse(mockFetch.mock.calls[0][1].body as string)
+    const body = JSON.parse(mockFetch.mock.calls[0]![1].body as string)
     expect(body.html).toContain("health-reporting")
     expect(body.html).toContain("footer")
   })

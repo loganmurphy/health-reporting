@@ -81,7 +81,7 @@ describe("saveDevVars", () => {
 
     saveDevVars("/path/to/.dev.vars", { KEY: "new_value" })
 
-    const written = (mockFs.writeFileSync.mock.calls[0][1] as string)
+    const written = (mockFs.writeFileSync.mock.calls[0]![1] as string)
     expect(written).toContain("KEY=new_value")
     expect(written).not.toContain("KEY=old_value")
   })
