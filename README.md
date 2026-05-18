@@ -29,7 +29,7 @@ Cloudflare Cron Trigger (2× daily)
   └─ Worker
        ├─ Oura API          sleep, readiness, SpO₂, activity, workouts
        ├─ Strava API         activities + per-activity detail, token auto-refresh
-       ├─ Workers AI         @cf/meta/llama-3.3-70b-instruct — HTML report generation
+       ├─ Workers AI         @cf/meta/llama-3.3-70b-instruct-fp8-fast — HTML report generation
        └─ Resend API         email delivery → reports@yourdomain.com → you@email.com
 ```
 

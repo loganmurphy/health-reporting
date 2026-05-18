@@ -70,7 +70,7 @@ Thin fetch wrapper for five Oura endpoints: `daily_sleep`, `daily_readiness`, `d
 
 ### Workers AI (`src/ai.ts`)
 
-Uses `@cf/meta/llama-3.3-70b-instruct`. Takes a system prompt and user content (pre-formatted data summary), returns the text response with markdown fences stripped.
+Uses `@cf/meta/llama-3.3-70b-instruct-fp8-fast`. Takes a system prompt and user content (pre-formatted data summary), returns the text response with markdown fences stripped.
 
 ### Email (`src/email.ts`)
 
