@@ -81,10 +81,10 @@ export async function buildMorningReport(
   const sleepScore = typeof todaySleep?.["score"] === "number" ? todaySleep["score"] : null
   const readinessScore =
     typeof todayReadiness?.["score"] === "number" ? todayReadiness["score"] : null
+  const spo2Percentage = latestSpo2?.["spo2_percentage"] as Record<string, unknown> | undefined
   const spo2Avg =
-    typeof (latestSpo2?.["spo2_percentage"] as Record<string, unknown> | undefined)?.["average"] ===
-    "number"
-      ? ((latestSpo2?.["spo2_percentage"] as Record<string, unknown>)["average"] as number)
+    spo2Percentage != null && typeof spo2Percentage["average"] === "number"
+      ? (spo2Percentage["average"] as number)
       : null
 
   const contributors = (readinessResp.data.find((d) => d["day"] === today)?.["contributors"] ??

@@ -19,7 +19,7 @@ export default {
     return new Response(null, { status: 404 })
   },
 
-  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+  async scheduled(event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
     const today = new Date().toISOString().slice(0, 10)
     const isMorning = event.cron === "30 15 * * *"
 
