@@ -1,0 +1,8 @@
+node_modules/
+.dev.vars
+.bootstrap-state
+wrangler.jsonc
+worker-configuration.d.ts
+coverage/
+dist/
+.wrangler/
