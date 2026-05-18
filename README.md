@@ -66,7 +66,7 @@ Re-running is fully idempotent.
 ### Local dev first?
 
 ```bash
-pnpm setup    # writes credentials to .dev.vars, copies wrangler.jsonc
+pnpm setup-local    # writes credentials to .dev.vars, copies wrangler.jsonc
 pnpm dev      # http://localhost:8787
 ```
 
@@ -79,7 +79,7 @@ curl "http://localhost:8787/__scheduled?cron=<EVENING_CRON_URL_ENCODED>"   # eve
 
 ## Cron schedule
 
-Cron times are configured during `pnpm setup` or `pnpm bootstrap`. Both wizards prompt for your local report times and UTC offset, then convert to UTC cron automatically. The generated cron strings are stored in `wrangler.jsonc` under both `triggers.crons` and `vars`.
+Cron times are configured during `pnpm setup-local` or `pnpm bootstrap`. Both wizards prompt for your local report times and UTC offset, then convert to UTC cron automatically. The generated cron strings are stored in `wrangler.jsonc` under both `triggers.crons` and `vars`.
 
 | Trigger                           | UTC                          | Report  |
 | --------------------------------- | ---------------------------- | ------- |
