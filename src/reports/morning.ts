@@ -22,6 +22,11 @@ function getMondayOfWeek(today: string): string {
   return d.toISOString().slice(0, 10)
 }
 
+function fmtDate(isoDate: string): string {
+  const [y, m, d] = isoDate.split("-")
+  return `${m}/${d}/${y}`
+}
+
 function scoreClass(score: number): string {
   if (score >= 85) return "score-great"
   if (score >= 70) return "score-good"
@@ -122,7 +127,7 @@ export async function buildMorningReport(
       const ss = typeof s["score"] === "number" ? s["score"] : null
       const rs = readinessResp.data.find((r) => r["day"] === day)
       const readScore = typeof rs?.["score"] === "number" ? rs["score"] : null
-      return `<tr><td>${day}</td><td>${ss !== null ? `<span class="${scoreClass(ss)}">${ss}</span>` : "—"}</td><td>${readScore !== null ? `<span class="${scoreClass(readScore)}">${readScore}</span>` : "—"}</td></tr>`
+      return `<tr><td>${fmtDate(day)}</td><td>${ss !== null ? `<span class="${scoreClass(ss)}">${ss}</span>` : "—"}</td><td>${readScore !== null ? `<span class="${scoreClass(readScore)}">${readScore}</span>` : "—"}</td></tr>`
     })
     .join("\n")
 
@@ -199,7 +204,7 @@ ${weekActivities.map((a) => `- ${String(a["name"] ?? "")} | ${fmtMiles(a["distan
     .join("")
 
   const html = `
-<h1>🌅 Morning Report — ${today}</h1>
+<h1>🌅 Morning Report — ${fmtDate(today)}</h1>
 
 <h2>Recovery</h2>
 <div>${recoveryBadges}</div>
@@ -244,7 +249,7 @@ ${aiHtml}
           ? "🟡 Moderate"
           : "🔴 Low"
       : ""
-  const subject = `Morning Report ${today}${readLabel ? ` — Readiness ${readLabel} (${readinessScore})` : ""}`
+  const subject = `Morning Report ${fmtDate(today)}${readLabel ? ` — Readiness ${readLabel} (${readinessScore})` : ""}`
 
   return { subject, html }
 }

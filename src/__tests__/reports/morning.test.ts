@@ -132,7 +132,7 @@ describe("buildMorningReport", () => {
     const result = await buildMorningReport(makeEnv(), TODAY)
     expect(result).toHaveProperty("subject")
     expect(result).toHaveProperty("html")
-    expect(result.subject).toContain(TODAY)
+    expect(result.subject).toContain("01/15/2025")
   })
 
   it("HTML contains readiness score", async () => {
@@ -205,7 +205,7 @@ describe("buildMorningReport", () => {
     const { subject, html } = await buildMorningReport(makeEnv(), TODAY)
     expect(html).toBeDefined()
     // Subject should not include readiness label when score is null
-    expect(subject).toBe(`Morning Report ${TODAY}`)
+    expect(subject).toBe("Morning Report 01/15/2025")
   })
 
   it("HTML contains week trend table", async () => {
@@ -277,7 +277,7 @@ describe("buildMorningReport", () => {
     setupMocks({ sleepData: sleepOnly, readinessData: readinessOnlyToday })
     const { html } = await buildMorningReport(makeEnv(), TODAY)
     // Jan 13 sleep row should show — for readiness
-    expect(html).toContain("2025-01-13")
+    expect(html).toContain("01/13/2025")
   })
 
   it("handles weekly trend rows where sleep score is null", async () => {
