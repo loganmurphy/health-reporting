@@ -1,0 +1,7 @@
+OURA_API_TOKEN=your_oura_pat
+STRAVA_CLIENT_ID=your_strava_client_id
+STRAVA_CLIENT_SECRET=your_strava_client_secret
+STRAVA_REFRESH_TOKEN=your_strava_refresh_token
+RESEND_API_KEY=your_resend_api_key
+REPORT_RECIPIENT=your@email.com
+REPORT_FROM=reports@yourdomain.com
