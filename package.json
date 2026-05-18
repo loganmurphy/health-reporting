@@ -15,8 +15,7 @@
     "deploy": "wrangler deploy",
     "cf-typegen": "wrangler types",
     "bootstrap": "tsx scripts/bootstrap.ts",
-    "connect-local": "npx tsx scripts/connect-local.ts",
-    "format:check:ci": "prettier --check .",
+    "setup": "tsx scripts/connect-local.ts",
     "reset": "rm -f .dev.vars .bootstrap-state wrangler.jsonc && echo 'Cleared .dev.vars + .bootstrap-state + wrangler.jsonc. Re-run `pnpm bootstrap` to start fresh.'"
   },
   "devDependencies": {
