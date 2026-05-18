@@ -19,11 +19,12 @@ describe("generateReport", () => {
   it("passes correct model and message structure to ai.run", async () => {
     mockAi.run.mockResolvedValue({ response: "result" })
     await generateReport(mockAi as unknown as Ai, "my system", "my user content")
-    expect(mockAi.run).toHaveBeenCalledWith("@cf/meta/llama-3.3-70b-instruct", {
+    expect(mockAi.run).toHaveBeenCalledWith("@cf/meta/llama-3.3-70b-instruct-fp8-fast", {
       messages: [
         { role: "system", content: "my system" },
         { role: "user", content: "my user content" },
       ],
+      max_tokens: 1024,
     })
   })
 

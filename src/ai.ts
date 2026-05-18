@@ -1,4 +1,4 @@
-const MODEL = "@cf/meta/llama-3.3-70b-instruct"
+const MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 
 interface AiTextResponse {
   response?: string
@@ -14,6 +14,7 @@ export async function generateReport(
       { role: "system", content: systemPrompt },
       { role: "user", content: userContent },
     ],
+    max_tokens: 1024,
   })) as AiTextResponse
 
   const text = result.response ?? ""

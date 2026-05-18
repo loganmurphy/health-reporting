@@ -108,7 +108,7 @@ describe("buildEveningReport", () => {
     const result = await buildEveningReport(makeEnv(), TODAY)
     expect(result).toHaveProperty("subject")
     expect(result).toHaveProperty("html")
-    expect(result.subject).toContain(TODAY)
+    expect(result.subject).toContain("01/15/2025")
   })
 
   it("HTML contains today's activity name", async () => {

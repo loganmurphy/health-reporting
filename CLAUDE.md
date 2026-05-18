@@ -9,7 +9,7 @@ pnpm dev          # Start local dev server on http://localhost:8787 (Miniflare, 
 pnpm deploy       # Deploy to Cloudflare Workers (requires wrangler login)
 pnpm cf-typegen   # Regenerate worker-configuration.d.ts from wrangler.jsonc bindings
 pnpm bootstrap    # Interactive wizard — provisions KV, runs Strava OAuth, deploys Worker
-pnpm setup        # Local dev setup — writes credentials to .dev.vars, copies wrangler.jsonc
+pnpm setup-local        # Local dev setup — writes credentials to .dev.vars, copies wrangler.jsonc
 pnpm format       # Prettier (write)
 pnpm format:check # Prettier (check only — used by pre-commit hook)
 pnpm lint         # oxlint
@@ -43,7 +43,7 @@ There is no build step. Wrangler bundles `src/index.ts` directly via esbuild on 
 
 ### Cron triggers
 
-Two cron triggers are configured by `pnpm setup` or `pnpm bootstrap`. Both scripts prompt for:
+Two cron triggers are configured by `pnpm setup-local` or `pnpm bootstrap`. Both scripts prompt for:
 
 - Morning report time (HH:MM local, 24h)
 - Evening report time (HH:MM local, 24h)
@@ -70,7 +70,7 @@ Thin fetch wrapper for five Oura endpoints: `daily_sleep`, `daily_readiness`, `d
 
 ### Workers AI (`src/ai.ts`)
 
-Uses `@cf/meta/llama-3.3-70b-instruct`. Takes a system prompt and user content (pre-formatted data summary), returns the text response with markdown fences stripped.
+Uses `@cf/meta/llama-3.3-70b-instruct-fp8-fast`. Takes a system prompt and user content (pre-formatted data summary), returns the text response with markdown fences stripped.
 
 ### Email (`src/email.ts`)
 

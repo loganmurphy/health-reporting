@@ -22,6 +22,11 @@ function getMondayOfWeek(today: string): string {
   return d.toISOString().slice(0, 10)
 }
 
+function fmtDate(isoDate: string): string {
+  const [y, m, d] = isoDate.split("-")
+  return `${m}/${d}/${y}`
+}
+
 function fmtDuration(seconds: number): string {
   const h = Math.floor(seconds / 3600)
   const m = Math.floor((seconds % 3600) / 60)
@@ -206,7 +211,7 @@ Total time: ${fmtDuration(weekTotalTime)}
     .join("")
 
   const html = `
-<h1>🌙 Evening Report — ${today}</h1>
+<h1>🌙 Evening Report — ${fmtDate(today)}</h1>
 
 ${
   detailedToday.length > 0
@@ -237,8 +242,8 @@ ${aiHtml}
 
   const subject =
     detailedToday.length > 0
-      ? `Evening Report ${today} — ${detailedToday.length} workout${detailedToday.length > 1 ? "s" : ""} · ${totalMilesToday.toFixed(2)} mi`
-      : `Evening Report ${today} — Rest Day`
+      ? `Evening Report ${fmtDate(today)} — ${detailedToday.length} workout${detailedToday.length > 1 ? "s" : ""} · ${totalMilesToday.toFixed(2)} mi`
+      : `Evening Report ${fmtDate(today)} — Rest Day`
 
   return { subject, html }
 }

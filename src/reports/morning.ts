@@ -22,6 +22,11 @@ function getMondayOfWeek(today: string): string {
   return d.toISOString().slice(0, 10)
 }
 
+function fmtDate(isoDate: string): string {
+  const [y, m, d] = isoDate.split("-")
+  return `${m}/${d}/${y}`
+}
+
 function scoreClass(score: number): string {
   if (score >= 85) return "score-great"
   if (score >= 70) return "score-good"
@@ -67,12 +72,21 @@ export async function buildMorningReport(
     return d.toISOString().slice(0, 10)
   })()
 
-  const [sleepResp, readinessResp, spo2Resp, weekActivities] = await Promise.all([
+  // Fetch from yesterday if it predates the week start (e.g. today is Monday → yesterday is Sunday)
+  const fetchFrom = yesterday < monday ? yesterday : monday
+
+  const [sleepResp, readinessResp, spo2Resp, allActivities] = await Promise.all([
     fetchDailySleep(env.OURA_API_TOKEN, monday, today),
     fetchDailyReadiness(env.OURA_API_TOKEN, monday, today),
     fetchDailySpO2(env.OURA_API_TOKEN, yesterday, today),
-    fetchActivities(env, dateToUnix(monday), dateToUnix(today, true)),
+    fetchActivities(env, dateToUnix(fetchFrom), dateToUnix(today, true)),
   ])
+
+  // Week activities only (Monday onwards) — used for weekly summary
+  const weekActivities = allActivities.filter((a) => {
+    const startDate = String(a["start_date_local"] ?? "").slice(0, 10)
+    return startDate >= monday
+  })
 
   const todaySleep = sleepResp.data.find((d) => d["day"] === today)
   const todayReadiness = readinessResp.data.find((d) => d["day"] === today)
@@ -90,7 +104,7 @@ export async function buildMorningReport(
   const contributors = (readinessResp.data.find((d) => d["day"] === today)?.["contributors"] ??
     {}) as Record<string, number>
 
-  const yesterdayActivities = weekActivities.filter((a) => {
+  const yesterdayActivities = allActivities.filter((a) => {
     const startDate = String(a["start_date_local"] ?? "").slice(0, 10)
     return startDate === yesterday
   })
@@ -113,7 +127,7 @@ export async function buildMorningReport(
       const ss = typeof s["score"] === "number" ? s["score"] : null
       const rs = readinessResp.data.find((r) => r["day"] === day)
       const readScore = typeof rs?.["score"] === "number" ? rs["score"] : null
-      return `<tr><td>${day}</td><td>${ss !== null ? `<span class="${scoreClass(ss)}">${ss}</span>` : "—"}</td><td>${readScore !== null ? `<span class="${scoreClass(readScore)}">${readScore}</span>` : "—"}</td></tr>`
+      return `<tr><td>${fmtDate(day)}</td><td>${ss !== null ? `<span class="${scoreClass(ss)}">${ss}</span>` : "—"}</td><td>${readScore !== null ? `<span class="${scoreClass(readScore)}">${readScore}</span>` : "—"}</td></tr>`
     })
     .join("\n")
 
@@ -128,11 +142,11 @@ export async function buildMorningReport(
   const systemPrompt = `You are an enthusiastic AI training assistant helping an endurance athlete meet their goals.
 Your role is to provide a clear, energetic morning briefing that sets the tone for the day.
 Write in an encouraging, direct tone — like a knowledgeable coach who's invested in the athlete's success.
-Output HTML fragment only (no doctype, no html/body tags). Use the CSS classes already in the email template:
-- metric / metric-label / metric-value for key numbers
-- verdict div for the day's recommendation
-- score-great / score-good / score-low for score coloring
-Be concise but specific. Reference the actual numbers. Keep total length under 600 words.`
+Output a single HTML fragment: one <div class="verdict"> containing 2–3 <p> tags.
+Structure: (1) brief recovery summary referencing the actual scores, (2) recap of yesterday's training if any, (3) a clear recommendation for today's training intensity — e.g. "Go hard today", "Easy effort only", "Rest day recommended" — with a one-sentence rationale.
+To color-code a number inline, wrap it in a <span>: <span class="score-great">87</span> (≥85), <span class="score-good">75</span> (70–84), <span class="score-low">62</span> (<70).
+Do NOT use metric, metric-label, or metric-value classes — those are already rendered above your section.
+Be concise but specific. Reference the actual numbers. Keep total length under 150 words.`
 
   const dataSummary = `
 DATE: ${today}
@@ -191,7 +205,7 @@ ${weekActivities.map((a) => `- ${String(a["name"] ?? "")} | ${fmtMiles(a["distan
     .join("")
 
   const html = `
-<h1>🌅 Morning Report — ${today}</h1>
+<h1>🌅 Morning Report — ${fmtDate(today)}</h1>
 
 <h2>Recovery</h2>
 <div>${recoveryBadges}</div>
@@ -236,7 +250,7 @@ ${aiHtml}
           ? "🟡 Moderate"
           : "🔴 Low"
       : ""
-  const subject = `Morning Report ${today}${readLabel ? ` — Readiness ${readLabel} (${readinessScore})` : ""}`
+  const subject = `Morning Report ${fmtDate(today)}${readLabel ? ` — Readiness ${readLabel} (${readinessScore})` : ""}`
 
   return { subject, html }
 }

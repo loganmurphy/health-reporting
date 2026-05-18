@@ -158,8 +158,12 @@ async function main() {
   console.log()
   console.log(`  ${c.bold("Next steps:")}`)
   console.log(`  ${c.dim("1.")} Run ${c.cyan("pnpm dev")} to start the local Worker`)
+  console.log(`  ${c.dim("2.")} In another terminal, trigger a report:`)
   console.log(
-    `  ${c.dim("2.")} Trigger a scheduled run: ${c.cyan("npx wrangler dev --test-scheduled")}`,
+    `       Morning: ${c.cyan(`curl "http://localhost:8787/cdn-cgi/handler/scheduled?cron=${encodeURIComponent(morningCron)}"`)}`,
+  )
+  console.log(
+    `       Evening: ${c.cyan(`curl "http://localhost:8787/cdn-cgi/handler/scheduled?cron=${encodeURIComponent(eveningCron)}"`)}`,
   )
   console.log()
 }
