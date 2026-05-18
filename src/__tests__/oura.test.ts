@@ -119,7 +119,9 @@ describe("Oura API fetch functions", () => {
     it("retries on 429 with Retry-After header and throws after max retries", async () => {
       vi.useFakeTimers()
       // All 3 attempts (initial + 2 retries) return 429
-      mockFetch.mockResolvedValue(makeErrorResponse(429, "Too Many Requests", { "Retry-After": "1" }))
+      mockFetch.mockResolvedValue(
+        makeErrorResponse(429, "Too Many Requests", { "Retry-After": "1" }),
+      )
 
       let caughtError: Error | undefined
       const promise = fetchDailySleep("token", "2025-01-10", "2025-01-15").catch((e: Error) => {

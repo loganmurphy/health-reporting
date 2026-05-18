@@ -91,9 +91,7 @@ function setupMocks(overrides?: {
     data: (overrides?.ouraData ?? ouraActivityData) as Record<string, unknown>[],
     next_token: null,
   })
-  vi.mocked(strava.fetchActivities).mockResolvedValue(
-    overrides?.weekActivities ?? todayActivities,
-  )
+  vi.mocked(strava.fetchActivities).mockResolvedValue(overrides?.weekActivities ?? todayActivities)
   vi.mocked(strava.fetchActivity).mockResolvedValue(
     (overrides?.detailedActivity ?? detailedActivity) as Record<string, unknown>,
   )

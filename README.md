@@ -8,6 +8,7 @@ Twice-daily health and training digest delivered to your inbox. Combines Oura ri
 ## Reports
 
 **Morning (9:30 AM)** — starts the day with a full recovery and training picture:
+
 - Recovery scores (readiness, sleep, SpO₂) with color-coded indicators
 - Sleep and readiness trend for the current week
 - Yesterday's training — distance, duration, HR, power
@@ -15,6 +16,7 @@ Twice-daily health and training digest delivered to your inbox. Combines Oura ri
 - Verdict — AI training recommendation based on recovery
 
 **Evening (8:00 PM)** — closes the day with a training recap:
+
 - Today's Strava activities in detail (power, normalized power, HR, suffer score)
 - Oura daily activity summary (steps, calories, activity score)
 - Week so far — updated totals
@@ -68,20 +70,28 @@ pnpm setup    # writes credentials to .dev.vars, copies wrangler.jsonc
 pnpm dev      # http://localhost:8787
 ```
 
-Test a scheduled trigger locally:
+Test a scheduled trigger locally (use the cron values from `.dev.vars`):
+
 ```bash
-curl "http://localhost:8787/__scheduled?cron=30+15+*+*+*"   # morning
-curl "http://localhost:8787/__scheduled?cron=0+2+*+*+*"     # evening
+curl "http://localhost:8787/__scheduled?cron=<MORNING_CRON_URL_ENCODED>"   # morning
+curl "http://localhost:8787/__scheduled?cron=<EVENING_CRON_URL_ENCODED>"   # evening
 ```
 
 ## Cron schedule
 
-Times are UTC — update in `wrangler.jsonc` when changing timezones.
+Cron times are configured during `pnpm setup` or `pnpm bootstrap`. Both wizards prompt for your local report times and UTC offset, then convert to UTC cron automatically. The generated cron strings are stored in `wrangler.jsonc` under both `triggers.crons` and `vars`.
 
-| Trigger | UTC | Local (MDT, UTC-6) | Report |
-|---|---|---|---|
-| `30 15 * * *` | 15:30 | 9:30 AM | Morning |
-| `0 2 * * *` | 02:00 | 8:00 PM | Evening |
+| Trigger                           | UTC                          | Report  |
+| --------------------------------- | ---------------------------- | ------- |
+| `MORNING_CRON` (set during setup) | e.g. `30 15 * * *` for UTC-6 | Morning |
+| `EVENING_CRON` (set during setup) | e.g. `0 2 * * *` for UTC-6   | Evening |
+
+To test locally with your configured crons:
+
+```bash
+curl "http://localhost:8787/__scheduled?cron=<MORNING_CRON>"   # morning
+curl "http://localhost:8787/__scheduled?cron=<EVENING_CRON>"   # evening
+```
 
 ## Related
 

@@ -47,7 +47,18 @@ function makeRefreshResponse() {
   }
 }
 
-function makeActivitiesResponse(activities = [{ id: 1, name: "Morning Run", sport_type: "Run", distance: 8046.7, moving_time: 1800, map: { id: "map1" } }]) {
+function makeActivitiesResponse(
+  activities = [
+    {
+      id: 1,
+      name: "Morning Run",
+      sport_type: "Run",
+      distance: 8046.7,
+      moving_time: 1800,
+      map: { id: "map1" },
+    },
+  ],
+) {
   return {
     ok: true,
     json: async () => activities,
@@ -166,7 +177,14 @@ describe("fetchActivities", () => {
     // 1609.34 meters = 1 mile
     mockFetch.mockResolvedValueOnce(
       makeActivitiesResponse([
-        { id: 1, name: "Run", sport_type: "Run", distance: 1609.34, moving_time: 300, map: undefined as unknown as { id: string } },
+        {
+          id: 1,
+          name: "Run",
+          sport_type: "Run",
+          distance: 1609.34,
+          moving_time: 300,
+          map: undefined as unknown as { id: string },
+        },
       ]),
     )
 
@@ -290,9 +308,7 @@ describe("refreshAccessToken error handling", () => {
 
     mockFetch.mockResolvedValueOnce(makeErrorResponse(400, "Bad Request"))
 
-    await expect(fetchActivities(env, 0, 0)).rejects.toThrow(
-      "Strava refresh token rejected (400)",
-    )
+    await expect(fetchActivities(env, 0, 0)).rejects.toThrow("Strava refresh token rejected (400)")
   })
 
   it("throws with re-auth message on 401", async () => {
@@ -301,9 +317,7 @@ describe("refreshAccessToken error handling", () => {
 
     mockFetch.mockResolvedValueOnce(makeErrorResponse(401, "Unauthorized"))
 
-    await expect(fetchActivities(env, 0, 0)).rejects.toThrow(
-      "Strava refresh token rejected (401)",
-    )
+    await expect(fetchActivities(env, 0, 0)).rejects.toThrow("Strava refresh token rejected (401)")
   })
 
   it("throws generic error on other refresh failures", async () => {

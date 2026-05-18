@@ -16,7 +16,13 @@ import {
   step,
   warn,
 } from "./prompts"
-import { loadDevVars, openBrowser, saveDevVars } from "./utils"
+import {
+  loadDevVars,
+  openBrowser,
+  saveDevVars,
+  localTimeToCron,
+  updateWranglerCrons,
+} from "./utils"
 import { runStravaOAuth } from "./strava-auth"
 
 const WORKER_NAME = "health-reporting"
@@ -149,7 +155,11 @@ function ensureKvNamespace(accountId: string): string {
   return id
 }
 
-function writeWranglerConfig(kvNamespaceId: string): void {
+function writeWranglerConfig(
+  kvNamespaceId: string,
+  morningCron: string,
+  eveningCron: string,
+): void {
   step(4, "Local Worker config (wrangler.jsonc)")
 
   if (!fs.existsSync(WRANGLER_EXAMPLE_PATH)) throw new Error(`Missing ${WRANGLER_EXAMPLE_PATH}`)
@@ -157,6 +167,7 @@ function writeWranglerConfig(kvNamespaceId: string): void {
     .readFileSync(WRANGLER_EXAMPLE_PATH, "utf8")
     .replace(/YOUR_KV_NAMESPACE_ID/g, kvNamespaceId)
   fs.writeFileSync(WRANGLER_JSONC_PATH, out)
+  updateWranglerCrons(WRANGLER_JSONC_PATH, morningCron, eveningCron)
   ok(`Wrote wrangler.jsonc ${c.dim(`(KV: ${kvNamespaceId.slice(0, 8)}…)`)}`)
 }
 
@@ -201,6 +212,8 @@ async function promptApiCredentials(): Promise<{
   resendKey: string
   recipient: string
   fromAddress: string
+  morningCron: string
+  eveningCron: string
 }> {
   step(6, "API credentials")
 
@@ -223,21 +236,38 @@ async function promptApiCredentials(): Promise<{
   const recipient = await prompt("Report recipient email", vars["REPORT_RECIPIENT"] ?? "")
   if (!recipient) throw new Error("Report recipient cannot be empty")
 
-  const fromAddress = await prompt(
-    "Report from address",
-    vars["REPORT_FROM"] ?? "",
-  )
+  const fromAddress = await prompt("Report from address", vars["REPORT_FROM"] ?? "")
   if (!fromAddress) throw new Error("Report from address cannot be empty")
+
+  // Cron schedule
+  let morningCron = vars["MORNING_CRON"] ?? ""
+  let eveningCron = vars["EVENING_CRON"] ?? ""
+  if (!morningCron || !eveningCron) {
+    console.log(`\n  ${c.bold("Cron schedule")}`)
+    console.log(`  ${c.dim("Enter times in your local timezone (24h). Examples: 09:30, 20:00")}`)
+    const morningTime = await prompt("Morning report time [HH:MM local, 24h]", "09:30")
+    const eveningTime = await prompt("Evening report time [HH:MM local, 24h]", "20:00")
+    const utcOffsetRaw = await prompt("UTC offset (e.g. -6 for MDT, 0 for UTC)", "0")
+    const utcOffset = parseInt(utcOffsetRaw, 10)
+    if (isNaN(utcOffset)) throw new Error("UTC offset must be an integer")
+    morningCron = localTimeToCron(morningTime, utcOffset)
+    eveningCron = localTimeToCron(eveningTime, utcOffset)
+    ok(`Morning cron: ${morningCron}  Evening cron: ${eveningCron}`)
+  } else {
+    ok(`MORNING_CRON / EVENING_CRON already in .dev.vars`)
+  }
 
   saveDevVars(DEV_VARS_PATH, {
     OURA_API_TOKEN: ouraToken,
     RESEND_API_KEY: resendKey,
     REPORT_RECIPIENT: recipient,
     REPORT_FROM: fromAddress,
+    MORNING_CRON: morningCron,
+    EVENING_CRON: eveningCron,
   })
   ok("Credentials saved to .dev.vars")
 
-  return { ouraToken, resendKey, recipient, fromAddress }
+  return { ouraToken, resendKey, recipient, fromAddress, morningCron, eveningCron }
 }
 
 async function runDeploy(accountId: string): Promise<{ code: number | null; output: string }> {
@@ -407,9 +437,7 @@ async function main(): Promise<void> {
     `  • An ${c.cyan("Oura Personal Access Token")} (cloud.ouraring.com/personal-access-tokens)`,
     `  • A ${c.cyan("Resend API key")} (resend.com) with a verified sending domain`,
     "",
-    `Cron schedule (Mountain Time):`,
-    `  • 9:30 AM — morning report`,
-    `  • 8:00 PM — evening report`,
+    `Cron schedule: configured during setup (local time + UTC offset).`,
     "",
     `Estimated time: ${c.bold("~5 minutes")}`,
   ])
@@ -450,7 +478,6 @@ async function main(): Promise<void> {
 
   const kvId = ensureKvNamespace(accountId)
   saveDevVars(BOOTSTRAP_STATE_PATH, { KV_NAMESPACE_ID: kvId })
-  writeWranglerConfig(kvId)
 
   step(4.5, "Regenerate Worker types")
   info("Running `wrangler types`...")
@@ -462,7 +489,9 @@ async function main(): Promise<void> {
   else ok("worker-configuration.d.ts updated")
 
   const { clientId, clientSecret } = await ensureStravaCredentials()
-  const { ouraToken, resendKey, recipient, fromAddress } = await promptApiCredentials()
+  const { ouraToken, resendKey, recipient, fromAddress, morningCron, eveningCron } =
+    await promptApiCredentials()
+  writeWranglerConfig(kvId, morningCron, eveningCron)
   await deployWorker(accountId)
 
   const refreshToken = await authorizeStrava(accountId, kvId, clientId, clientSecret)
@@ -484,9 +513,9 @@ async function main(): Promise<void> {
   banner("✅  Setup complete!", [
     `Reports will be sent to: ${c.cyan(recipient)}`,
     "",
-    `${c.bold("Schedule (Mountain Time):")}`,
-    `  • 9:30 AM — morning report (readiness, sleep trend, yesterday's training)`,
-    `  • 8:00 PM — evening report (today's training, day recap)`,
+    `${c.bold("Schedule (UTC crons):")}`,
+    `  • ${morningCron} — morning report (readiness, sleep trend, yesterday's training)`,
+    `  • ${eveningCron} — evening report (today's training, day recap)`,
     "",
     `To test immediately: ${c.cyan("npx wrangler dev")} then trigger via Miniflare`,
     `To tail logs: ${c.cyan("npx wrangler tail")}`,

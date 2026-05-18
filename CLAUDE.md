@@ -43,12 +43,18 @@ There is no build step. Wrangler bundles `src/index.ts` directly via esbuild on 
 
 ### Cron triggers
 
-Two cron triggers defined in `wrangler.jsonc`:
+Two cron triggers are configured by `pnpm setup` or `pnpm bootstrap`. Both scripts prompt for:
 
-- `30 15 * * *` = 9:30 AM MDT (UTC-6) — morning report
-- `0 2 * * *` = 8:00 PM MDT (UTC-6) — evening report
+- Morning report time (HH:MM local, 24h)
+- Evening report time (HH:MM local, 24h)
+- UTC offset (signed integer, e.g. -6 for MDT)
 
-The Worker's `scheduled` handler dispatches to `buildMorningReport` or `buildEveningReport` based on `event.cron`.
+The cron strings are generated via `localTimeToCron()` in `scripts/utils.ts` and written to `wrangler.jsonc` in two places:
+
+- `triggers.crons` — the Cloudflare cron schedule
+- `vars.MORNING_CRON` / `vars.EVENING_CRON` — read by the Worker at runtime
+
+The Worker's `scheduled` handler dispatches to `buildMorningReport` or `buildEveningReport` by comparing `event.cron` against `env.MORNING_CRON`.
 
 ### No OAuth layer
 

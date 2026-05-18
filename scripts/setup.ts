@@ -3,7 +3,7 @@ import * as path from "node:path"
 import { spawnSync } from "node:child_process"
 
 import { banner, c, ok, warn, info, closePrompts, prompt, promptHidden } from "./prompts"
-import { loadDevVars, saveDevVars } from "./utils"
+import { loadDevVars, saveDevVars, localTimeToCron, updateWranglerCrons } from "./utils"
 import { runStravaOAuth } from "./strava-auth"
 
 const DEV_VARS_PATH = path.resolve(process.cwd(), ".dev.vars")
@@ -112,6 +112,25 @@ async function main() {
     ok("REPORT_FROM already in .dev.vars")
   }
 
+  // Cron schedule
+  let morningCron = vars["MORNING_CRON"] ?? ""
+  let eveningCron = vars["EVENING_CRON"] ?? ""
+  if (!morningCron || !eveningCron) {
+    console.log(`\n  ${c.bold("Cron schedule")}`)
+    console.log(`  ${c.dim("Enter times in your local timezone (24h). Examples: 09:30, 20:00")}`)
+    const morningTime = await prompt("Morning report time [HH:MM local, 24h]", "09:30")
+    const eveningTime = await prompt("Evening report time [HH:MM local, 24h]", "20:00")
+    const utcOffsetRaw = await prompt("UTC offset (e.g. -6 for MDT, 0 for UTC)", "0")
+    const utcOffset = parseInt(utcOffsetRaw, 10)
+    if (isNaN(utcOffset)) throw new Error("UTC offset must be an integer")
+    morningCron = localTimeToCron(morningTime, utcOffset)
+    eveningCron = localTimeToCron(eveningTime, utcOffset)
+    saveDevVars(DEV_VARS_PATH, { MORNING_CRON: morningCron, EVENING_CRON: eveningCron })
+    ok(`Morning cron: ${morningCron}  Evening cron: ${eveningCron}`)
+  } else {
+    ok(`MORNING_CRON / EVENING_CRON already in .dev.vars`)
+  }
+
   // wrangler.jsonc setup
   if (!fs.existsSync(WRANGLER_JSONC_PATH)) {
     const example = path.resolve(process.cwd(), "wrangler.example.jsonc")
@@ -122,6 +141,8 @@ async function main() {
   } else {
     ok("wrangler.jsonc found")
   }
+  updateWranglerCrons(WRANGLER_JSONC_PATH, morningCron, eveningCron)
+  ok(`wrangler.jsonc crons updated`)
 
   // Regenerate Worker types
   info("Regenerating Worker types...")

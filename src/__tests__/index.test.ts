@@ -1,11 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 
 vi.mock("../reports/morning", () => ({
-  buildMorningReport: vi.fn().mockResolvedValue({ subject: "Morning Subject", html: "<p>morning</p>" }),
+  buildMorningReport: vi
+    .fn()
+    .mockResolvedValue({ subject: "Morning Subject", html: "<p>morning</p>" }),
 }))
 
 vi.mock("../reports/evening", () => ({
-  buildEveningReport: vi.fn().mockResolvedValue({ subject: "Evening Subject", html: "<p>evening</p>" }),
+  buildEveningReport: vi
+    .fn()
+    .mockResolvedValue({ subject: "Evening Subject", html: "<p>evening</p>" }),
 }))
 
 vi.mock("../email", () => ({
@@ -28,6 +32,8 @@ function makeEnv() {
     RESEND_API_KEY: "resend_key",
     REPORT_RECIPIENT: "user@example.com",
     REPORT_FROM: "reports@example.com",
+    MORNING_CRON: "30 15 * * *",
+    EVENING_CRON: "0 2 * * *",
   }
 }
 
@@ -85,7 +91,8 @@ describe("scheduled handler", () => {
     await worker.scheduled(event, makeEnv(), makeCtx())
 
     const today = new Date().toISOString().slice(0, 10)
-    const [, calledToday] = (morning.buildMorningReport as ReturnType<typeof vi.fn>).mock.calls[0] as [unknown, string]
+    const [, calledToday] = (morning.buildMorningReport as ReturnType<typeof vi.fn>).mock
+      .calls[0] as [unknown, string]
     expect(calledToday).toBe(today)
   })
 
@@ -94,7 +101,8 @@ describe("scheduled handler", () => {
     await worker.scheduled(event, makeEnv(), makeCtx())
 
     const today = new Date().toISOString().slice(0, 10)
-    const [, calledToday] = (evening.buildEveningReport as ReturnType<typeof vi.fn>).mock.calls[0] as [unknown, string]
+    const [, calledToday] = (evening.buildEveningReport as ReturnType<typeof vi.fn>).mock
+      .calls[0] as [unknown, string]
     expect(calledToday).toBe(today)
   })
 })

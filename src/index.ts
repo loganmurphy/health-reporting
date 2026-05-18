@@ -12,6 +12,8 @@ interface Env {
   RESEND_API_KEY: string
   REPORT_RECIPIENT: string
   REPORT_FROM: string
+  MORNING_CRON: string
+  EVENING_CRON: string
 }
 
 export default {
@@ -21,7 +23,7 @@ export default {
 
   async scheduled(event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
     const today = new Date().toISOString().slice(0, 10)
-    const isMorning = event.cron === "30 15 * * *"
+    const isMorning = event.cron === env.MORNING_CRON
 
     const { subject, html } = isMorning
       ? await buildMorningReport(env, today)

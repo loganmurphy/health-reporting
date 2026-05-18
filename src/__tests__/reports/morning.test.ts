@@ -50,7 +50,11 @@ const sleepData = [
 const readinessData = [
   { day: "2025-01-13", score: 72, contributors: { recovery_index: 85, sleep_balance: 70 } },
   { day: "2025-01-14", score: 79, contributors: { recovery_index: 80, sleep_balance: 75 } },
-  { day: "2025-01-15", score: 85, contributors: { recovery_index: 95, sleep_balance: 78, hrv_balance: 71 } },
+  {
+    day: "2025-01-15",
+    score: 85,
+    contributors: { recovery_index: 95, sleep_balance: 78, hrv_balance: 71 },
+  },
 ]
 
 const spo2Data = [
@@ -87,7 +91,8 @@ const detailedActivity = {
   weighted_average_watts: 260,
 }
 
-function setupMocks(overrides?: { // eslint-disable-next-line @typescript-eslint/no-explicit-any
+function setupMocks(overrides?: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sleepData?: Record<string, unknown>[]
   readinessData?: Record<string, unknown>[]
   spo2Data?: Record<string, unknown>[]
@@ -106,9 +111,7 @@ function setupMocks(overrides?: { // eslint-disable-next-line @typescript-eslint
     data: (overrides?.spo2Data ?? spo2Data) as Record<string, unknown>[],
     next_token: null,
   })
-  vi.mocked(strava.fetchActivities).mockResolvedValue(
-    overrides?.weekActivities ?? weekActivities,
-  )
+  vi.mocked(strava.fetchActivities).mockResolvedValue(overrides?.weekActivities ?? weekActivities)
   if (overrides?.detailedActivity === null) {
     vi.mocked(strava.fetchActivity).mockResolvedValue({} as Record<string, unknown>)
   } else {
@@ -180,18 +183,14 @@ describe("buildMorningReport", () => {
   })
 
   it("subject includes moderate readiness label for moderate score", async () => {
-    const modReadiness = readinessData.map((r) =>
-      r.day === TODAY ? { ...r, score: 75 } : r,
-    )
+    const modReadiness = readinessData.map((r) => (r.day === TODAY ? { ...r, score: 75 } : r))
     setupMocks({ readinessData: modReadiness })
     const { subject } = await buildMorningReport(makeEnv(), TODAY)
     expect(subject).toContain("Moderate")
   })
 
   it("subject includes low readiness label for low score", async () => {
-    const lowReadiness = readinessData.map((r) =>
-      r.day === TODAY ? { ...r, score: 60 } : r,
-    )
+    const lowReadiness = readinessData.map((r) => (r.day === TODAY ? { ...r, score: 60 } : r))
     setupMocks({ readinessData: lowReadiness })
     const { subject } = await buildMorningReport(makeEnv(), TODAY)
     expect(subject).toContain("Low")
@@ -270,7 +269,10 @@ describe("buildMorningReport", () => {
   })
 
   it("handles weekly trend rows where readiness entry is missing", async () => {
-    const sleepOnly = [{ day: "2025-01-13", score: 75 }, { day: TODAY, score: 85 }]
+    const sleepOnly = [
+      { day: "2025-01-13", score: 75 },
+      { day: TODAY, score: 85 },
+    ]
     const readinessOnlyToday = [{ day: TODAY, score: 85, contributors: { recovery_index: 90 } }]
     setupMocks({ sleepData: sleepOnly, readinessData: readinessOnlyToday })
     const { html } = await buildMorningReport(makeEnv(), TODAY)
