@@ -9,6 +9,7 @@ pnpm dev          # Start local dev server on http://localhost:8787 (Miniflare, 
 pnpm deploy       # Deploy to Cloudflare Workers (requires wrangler login)
 pnpm cf-typegen   # Regenerate worker-configuration.d.ts from wrangler.jsonc bindings
 pnpm bootstrap    # Interactive wizard — provisions KV, runs Strava OAuth, deploys Worker
+pnpm setup        # Local dev setup — writes credentials to .dev.vars, copies wrangler.jsonc
 pnpm format       # Prettier (write)
 pnpm format:check # Prettier (check only — used by pre-commit hook)
 pnpm lint         # oxlint
