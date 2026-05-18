@@ -93,7 +93,7 @@ async function main() {
   // Report recipient
   let recipient = vars["REPORT_RECIPIENT"] ?? ""
   if (!recipient) {
-    recipient = await prompt("Report recipient email", "loganmurphy1984@gmail.com")
+    recipient = await prompt("Report recipient email (e.g. you@gmail.com)")
     if (!recipient) throw new Error("Report recipient cannot be empty")
     saveDevVars(DEV_VARS_PATH, { REPORT_RECIPIENT: recipient })
     ok(`REPORT_RECIPIENT saved to .dev.vars`)
@@ -104,7 +104,7 @@ async function main() {
   // Report from address
   let fromAddress = vars["REPORT_FROM"] ?? ""
   if (!fromAddress) {
-    fromAddress = await prompt("Report from address", "reports@loganmurphy.dev")
+    fromAddress = await prompt("Report from address (e.g. reports@yourdomain.com)")
     if (!fromAddress) throw new Error("Report from address cannot be empty")
     saveDevVars(DEV_VARS_PATH, { REPORT_FROM: fromAddress })
     ok(`REPORT_FROM saved to .dev.vars`)

@@ -28,7 +28,7 @@ Cloudflare Cron Trigger (2× daily)
        ├─ Oura API          sleep, readiness, SpO₂, activity, workouts
        ├─ Strava API         activities + per-activity detail, token auto-refresh
        ├─ Workers AI         @cf/meta/llama-3.3-70b-instruct — HTML report generation
-       └─ Resend API         email delivery → reports@loganmurphy.dev
+       └─ Resend API         email delivery → reports@yourdomain.com → you@email.com
 ```
 
 No inbound HTTP — the Worker returns 404 for all external requests. All traffic is outbound.

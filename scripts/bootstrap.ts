@@ -225,7 +225,7 @@ async function promptApiCredentials(): Promise<{
 
   const fromAddress = await prompt(
     "Report from address",
-    vars["REPORT_FROM"] ?? "reports@loganmurphy.dev",
+    vars["REPORT_FROM"] ?? "",
   )
   if (!fromAddress) throw new Error("Report from address cannot be empty")
 
