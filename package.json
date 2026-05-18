@@ -1,0 +1,51 @@
+{
+  "name": "health-reporting",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker that sends twice-daily health and training reports via Oura, Strava, and Workers AI",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "oxlint --config .oxlintrc.json --deny-warnings src scripts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "cf-typegen": "wrangler types",
+    "bootstrap": "tsx scripts/bootstrap.ts",
+    "setup": "tsx scripts/connect-local.ts",
+    "reset": "rm -f .dev.vars .bootstrap-state wrangler.jsonc && echo 'Cleared .dev.vars + .bootstrap-state + wrangler.jsonc. Re-run `pnpm bootstrap` to start fresh.'"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250525.0",
+    "@types/node": "^25.6.0",
+    "@vitest/coverage-v8": "^4.1.5",
+    "lefthook": "^2.1.6",
+    "oxlint": "^1.61.0",
+    "prettier": "^3.8.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.7.3",
+    "vitest": "^4.1.5",
+    "wrangler": "^4.85.0"
+  },
+  "engines": {
+    "node": "24.x",
+    "pnpm": "10.x"
+  },
+  "volta": {
+    "node": "24.11.1",
+    "pnpm": "10.22.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "workerd"
+    ],
+    "ignoredBuiltDependencies": [
+      "lefthook"
+    ]
+  }
+}
