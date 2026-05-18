@@ -45,7 +45,7 @@ There is no build step. Wrangler bundles `src/index.ts` directly via esbuild on 
 Two cron triggers defined in `wrangler.jsonc`:
 
 - `30 15 * * *` = 9:30 AM MDT (UTC-6) — morning report
-- `0 2 * * *`   = 8:00 PM MDT (UTC-6) — evening report
+- `0 2 * * *` = 8:00 PM MDT (UTC-6) — evening report
 
 The Worker's `scheduled` handler dispatches to `buildMorningReport` or `buildEveningReport` based on `event.cron`.
 

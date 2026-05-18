@@ -72,11 +72,7 @@ function wrapInTemplate(html: string): string {
 </html>`
 }
 
-export async function sendEmail(
-  config: EmailConfig,
-  subject: string,
-  html: string,
-): Promise<void> {
+export async function sendEmail(config: EmailConfig, subject: string, html: string): Promise<void> {
   const payload: ResendPayload = {
     from: config.from,
     to: [config.to],

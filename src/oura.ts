@@ -7,7 +7,11 @@ function buildParams(startDate: string, endDate: string): URLSearchParams {
   return new URLSearchParams({ start_date: startDate, end_date: endDate })
 }
 
-async function ouraget(token: string, path: string, params: URLSearchParams): Promise<OuraResponse> {
+async function ouraget(
+  token: string,
+  path: string,
+  params: URLSearchParams,
+): Promise<OuraResponse> {
   const url = `${OURA_BASE}${path}?${params.toString()}`
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {

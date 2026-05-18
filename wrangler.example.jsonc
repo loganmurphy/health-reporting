@@ -8,21 +8,19 @@
 
   // KV for Strava access/refresh token rotation.
   // Create with: npx wrangler kv namespace create health-reporting-kv
-  "kv_namespaces": [
-    { "binding": "OAUTH_KV", "id": "YOUR_KV_NAMESPACE_ID" }
-  ],
+  "kv_namespaces": [{ "binding": "OAUTH_KV", "id": "YOUR_KV_NAMESPACE_ID" }],
 
   "triggers": {
-    "crons": ["30 15 * * *", "0 2 * * *"]
+    "crons": ["30 15 * * *", "0 2 * * *"],
   },
 
   // Observability — enables `wrangler tail` and the Logs tab in the CF dashboard.
   "observability": {
     "logs": {
       "enabled": true,
-      "invocation_logs": true
-    }
-  }
+      "invocation_logs": true,
+    },
+  },
 
   // Secrets set via: wrangler secret put <NAME>
   //   OURA_API_TOKEN        — Oura Personal Access Token

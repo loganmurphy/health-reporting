@@ -176,7 +176,9 @@ async function ensureStravaCredentials(): Promise<{ clientId: string; clientSecr
 
   console.log("  You need a Strava API application to connect this worker.")
   console.log(`  ${c.bold("Create one at:")} ${c.cyan(STRAVA_API_URL)}`)
-  console.log(`  ${c.dim("Important: set Authorization Callback Domain to")} ${c.cyan("localhost")}\n`)
+  console.log(
+    `  ${c.dim("Important: set Authorization Callback Domain to")} ${c.cyan("localhost")}\n`,
+  )
 
   if (!(await confirm("Do you have a Strava API app already?", false))) {
     openBrowser(STRAVA_API_URL)

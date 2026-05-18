@@ -15,6 +15,10 @@ interface Env {
 }
 
 export default {
+  async fetch(): Promise<Response> {
+    return new Response(null, { status: 404 })
+  },
+
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
     const today = new Date().toISOString().slice(0, 10)
     const isMorning = event.cron === "30 15 * * *"

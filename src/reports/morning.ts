@@ -52,8 +52,7 @@ function buildActivityRow(a: StravaActivity): string {
   const dur = typeof a["moving_time"] === "number" ? fmtDuration(a["moving_time"]) : "—"
   const hr =
     typeof a["average_heartrate"] === "number" ? `${Math.round(a["average_heartrate"])} bpm` : "—"
-  const watts =
-    typeof a["average_watts"] === "number" ? `${Math.round(a["average_watts"])}w` : "—"
+  const watts = typeof a["average_watts"] === "number" ? `${Math.round(a["average_watts"])}w` : "—"
   return `<tr><td>${name}</td><td>${type}</td><td>${miles}</td><td>${dur}</td><td>${hr}</td><td>${watts}</td></tr>`
 }
 
@@ -165,8 +164,7 @@ ${
               ? ` Avg Power: ${Math.round(a["average_watts"])}w`
               : ""
           const miles = fmtMiles(a["distance_miles"])
-          const dur =
-            typeof a["moving_time"] === "number" ? fmtDuration(a["moving_time"]) : "—"
+          const dur = typeof a["moving_time"] === "number" ? fmtDuration(a["moving_time"]) : "—"
           return `- ${String(a["name"] ?? "Activity")} (${String(a["sport_type"] ?? a["type"] ?? "")}) | ${miles} | ${dur}${hr}${max}${watts}${np}`
         })
         .join("\n")

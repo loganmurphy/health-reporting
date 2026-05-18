@@ -81,9 +81,7 @@ function waitForCode(): Promise<string> {
     server.on("error", (err: NodeJS.ErrnoException) => {
       if (err.code === "EADDRINUSE") {
         reject(
-          new Error(
-            "Port 9999 is already in use — close whatever is running on it and try again.",
-          ),
+          new Error("Port 9999 is already in use — close whatever is running on it and try again."),
         )
       } else {
         reject(err)

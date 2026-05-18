@@ -48,17 +48,11 @@ function buildActivityDetailHtml(a: StravaActivity): string {
       ? `Avg HR: ${Math.round(a["average_heartrate"])} bpm`
       : null
   const maxHr =
-    typeof a["max_heartrate"] === "number"
-      ? `Max HR: ${Math.round(a["max_heartrate"])} bpm`
-      : null
+    typeof a["max_heartrate"] === "number" ? `Max HR: ${Math.round(a["max_heartrate"])} bpm` : null
   const avgWatts =
-    typeof a["average_watts"] === "number"
-      ? `Avg Power: ${Math.round(a["average_watts"])}w`
-      : null
+    typeof a["average_watts"] === "number" ? `Avg Power: ${Math.round(a["average_watts"])}w` : null
   const np =
-    typeof a["weighted_average_watts"] === "number"
-      ? `NP: ${a["weighted_average_watts"]}w`
-      : null
+    typeof a["weighted_average_watts"] === "number" ? `NP: ${a["weighted_average_watts"]}w` : null
   const maxWatts =
     typeof a["max_watts"] === "number" ? `Max Power: ${Math.round(a["max_watts"])}w` : null
   const calories = typeof a["calories"] === "number" ? `${a["calories"]} kcal` : null
@@ -84,8 +78,7 @@ function buildWeekRow(a: StravaActivity): string {
   const dur = typeof a["moving_time"] === "number" ? fmtDuration(a["moving_time"]) : "—"
   const hr =
     typeof a["average_heartrate"] === "number" ? `${Math.round(a["average_heartrate"])} bpm` : "—"
-  const watts =
-    typeof a["average_watts"] === "number" ? `${Math.round(a["average_watts"])}w` : "—"
+  const watts = typeof a["average_watts"] === "number" ? `${Math.round(a["average_watts"])}w` : "—"
   const startDate = String(a["start_date_local"] ?? "").slice(0, 10)
   return `<tr><td>${startDate}</td><td>${name}</td><td>${type}</td><td>${miles}</td><td>${dur}</td><td>${hr}</td><td>${watts}</td></tr>`
 }
@@ -179,8 +172,7 @@ ${
               ? ` Avg Power: ${Math.round(a["average_watts"])}w`
               : ""
           const miles = fmtMiles(a["distance_miles"])
-          const dur =
-            typeof a["moving_time"] === "number" ? fmtDuration(a["moving_time"]) : "—"
+          const dur = typeof a["moving_time"] === "number" ? fmtDuration(a["moving_time"]) : "—"
           const suffer =
             typeof a["suffer_score"] === "number" ? ` Suffer: ${a["suffer_score"]}` : ""
           return `- ${String(a["name"] ?? "Activity")} (${String(a["sport_type"] ?? a["type"] ?? "")}) | ${miles} | ${dur}${hr}${max}${watts}${np}${suffer}`
@@ -222,11 +214,7 @@ ${
     : "<h2>Today's Training</h2><p>No Strava activities recorded today.</p>"
 }
 
-${
-  ouraMetrics
-    ? `<h2>Day's Activity</h2><div>${ouraMetrics}</div>`
-    : ""
-}
+${ouraMetrics ? `<h2>Day's Activity</h2><div>${ouraMetrics}</div>` : ""}
 
 ${
   weekStravaActivities.length > 0

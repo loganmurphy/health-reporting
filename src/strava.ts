@@ -41,9 +41,7 @@ async function getAccessToken(env: StravaEnv): Promise<string> {
   const refreshToken =
     (await env.OAUTH_KV.get(REFRESH_TOKEN_KEY)) || env.STRAVA_REFRESH_TOKEN || null
   if (!refreshToken) {
-    throw new Error(
-      "Strava refresh token not found. Run `pnpm bootstrap` to authorize Strava.",
-    )
+    throw new Error("Strava refresh token not found. Run `pnpm bootstrap` to authorize Strava.")
   }
 
   return refreshAccessToken(env, refreshToken)
