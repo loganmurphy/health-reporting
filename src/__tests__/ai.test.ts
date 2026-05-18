@@ -24,6 +24,7 @@ describe("generateReport", () => {
         { role: "system", content: "my system" },
         { role: "user", content: "my user content" },
       ],
+      max_tokens: 1024,
     })
   })
 

@@ -142,10 +142,11 @@ export async function buildMorningReport(
   const systemPrompt = `You are an enthusiastic AI training assistant helping an endurance athlete meet their goals.
 Your role is to provide a clear, energetic morning briefing that sets the tone for the day.
 Write in an encouraging, direct tone — like a knowledgeable coach who's invested in the athlete's success.
-Output a single HTML fragment: one <div class="verdict"> containing one or more <p> tags.
+Output a single HTML fragment: one <div class="verdict"> containing 2–3 <p> tags.
+Structure: (1) brief recovery summary referencing the actual scores, (2) recap of yesterday's training if any, (3) a clear recommendation for today's training intensity — e.g. "Go hard today", "Easy effort only", "Rest day recommended" — with a one-sentence rationale.
 To color-code a number inline, wrap it in a <span>: <span class="score-great">87</span> (≥85), <span class="score-good">75</span> (70–84), <span class="score-low">62</span> (<70).
 Do NOT use metric, metric-label, or metric-value classes — those are already rendered above your section.
-Be concise but specific. Reference the actual numbers. Keep total length under 300 words.`
+Be concise but specific. Reference the actual numbers. Keep total length under 150 words.`
 
   const dataSummary = `
 DATE: ${today}

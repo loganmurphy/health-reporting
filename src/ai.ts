@@ -14,6 +14,7 @@ export async function generateReport(
       { role: "system", content: systemPrompt },
       { role: "user", content: userContent },
     ],
+    max_tokens: 1024,
   })) as AiTextResponse
 
   const text = result.response ?? ""
