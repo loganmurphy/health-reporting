@@ -115,20 +115,25 @@ async function main() {
   // Cron schedule
   let morningCron = vars["MORNING_CRON"] ?? ""
   let eveningCron = vars["EVENING_CRON"] ?? ""
-  if (!morningCron || !eveningCron) {
+  let utcOffset = parseInt(vars["UTC_OFFSET"] ?? "NaN", 10)
+  if (!morningCron || !eveningCron || isNaN(utcOffset)) {
     console.log(`\n  ${c.bold("Cron schedule")}`)
     console.log(`  ${c.dim("Enter times in your local timezone (24h). Examples: 09:30, 20:00")}`)
     const morningTime = await prompt("Morning report time [HH:MM local, 24h]", "09:30")
     const eveningTime = await prompt("Evening report time [HH:MM local, 24h]", "20:00")
     const utcOffsetRaw = await prompt("UTC offset (e.g. -6 for MDT, 0 for UTC)", "0")
-    const utcOffset = parseInt(utcOffsetRaw, 10)
+    utcOffset = parseInt(utcOffsetRaw, 10)
     if (isNaN(utcOffset)) throw new Error("UTC offset must be an integer")
     morningCron = localTimeToCron(morningTime, utcOffset)
     eveningCron = localTimeToCron(eveningTime, utcOffset)
-    saveDevVars(DEV_VARS_PATH, { MORNING_CRON: morningCron, EVENING_CRON: eveningCron })
-    ok(`Morning cron: ${morningCron}  Evening cron: ${eveningCron}`)
+    saveDevVars(DEV_VARS_PATH, {
+      MORNING_CRON: morningCron,
+      EVENING_CRON: eveningCron,
+      UTC_OFFSET: String(utcOffset),
+    })
+    ok(`Morning cron: ${morningCron}  Evening cron: ${eveningCron}  UTC offset: ${utcOffset}`)
   } else {
-    ok(`MORNING_CRON / EVENING_CRON already in .dev.vars`)
+    ok(`MORNING_CRON / EVENING_CRON / UTC_OFFSET already in .dev.vars`)
   }
 
   // wrangler.jsonc setup
@@ -141,7 +146,7 @@ async function main() {
   } else {
     ok("wrangler.jsonc found")
   }
-  updateWranglerCrons(WRANGLER_JSONC_PATH, morningCron, eveningCron)
+  updateWranglerCrons(WRANGLER_JSONC_PATH, morningCron, eveningCron, utcOffset)
   ok(`wrangler.jsonc crons updated`)
 
   // Regenerate Worker types

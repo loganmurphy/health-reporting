@@ -14,6 +14,7 @@ interface Env {
   REPORT_FROM: string
   MORNING_CRON: string
   EVENING_CRON: string
+  UTC_OFFSET: string
 }
 
 export default {
@@ -22,7 +23,8 @@ export default {
   },
 
   async scheduled(event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
-    const today = new Date().toISOString().slice(0, 10)
+    const utcOffset = parseInt(env.UTC_OFFSET ?? "0", 10)
+    const today = new Date(event.scheduledTime + utcOffset * 3600 * 1000).toISOString().slice(0, 10)
     const isMorning = event.cron === env.MORNING_CRON
 
     const { subject, html } = isMorning
