@@ -59,6 +59,13 @@ function wrapInTemplate(html: string): string {
     th { text-align: left; font-size: 12px; color: #6b7280; font-weight: 600; padding: 6px 8px; border-bottom: 1px solid #e5e7eb; }
     td { padding: 7px 8px; font-size: 14px; border-bottom: 1px solid #f3f4f6; }
     tr:last-child td { border-bottom: none; }
+    .col-hide { }
+    @media (max-width: 480px) {
+      .card { padding: 20px 16px; }
+      .metric { display: block; margin-bottom: 8px; }
+      .col-hide { display: none; }
+      td, th { padding: 6px 5px; font-size: 13px; }
+    }
   </style>
 </head>
 <body>

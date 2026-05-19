@@ -40,6 +40,7 @@ export function updateWranglerCrons(
   filePath: string,
   morningCron: string,
   eveningCron: string,
+  utcOffset: number,
 ): void {
   let text = fs.readFileSync(filePath, "utf8")
 
@@ -50,7 +51,6 @@ export function updateWranglerCrons(
   if (/"MORNING_CRON"\s*:/.test(text)) {
     text = text.replace(/"MORNING_CRON"\s*:\s*"[^"]*"/, `"MORNING_CRON": "${morningCron}"`)
   } else {
-    // Insert into existing vars block after the opening brace
     text = text.replace(/("vars"\s*:\s*\{)/, `$1\n    "MORNING_CRON": "${morningCron}",`)
   }
 
@@ -59,6 +59,13 @@ export function updateWranglerCrons(
     text = text.replace(/"EVENING_CRON"\s*:\s*"[^"]*"/, `"EVENING_CRON": "${eveningCron}"`)
   } else {
     text = text.replace(/("vars"\s*:\s*\{)/, `$1\n    "EVENING_CRON": "${eveningCron}",`)
+  }
+
+  // Replace or add UTC_OFFSET in vars block
+  if (/"UTC_OFFSET"\s*:/.test(text)) {
+    text = text.replace(/"UTC_OFFSET"\s*:\s*"[^"]*"/, `"UTC_OFFSET": "${utcOffset}"`)
+  } else {
+    text = text.replace(/("vars"\s*:\s*\{)/, `$1\n    "UTC_OFFSET": "${utcOffset}",`)
   }
 
   fs.writeFileSync(filePath, text)

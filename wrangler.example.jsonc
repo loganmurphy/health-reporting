@@ -16,9 +16,11 @@
   },
 
   "vars": {
-    // Set by pnpm setup/bootstrap — used by the Worker to dispatch morning vs evening report.
+    // Set by pnpm setup-local/bootstrap — used by the Worker to dispatch morning vs evening report.
     "MORNING_CRON": "MORNING_CRON_UTC",
     "EVENING_CRON": "EVENING_CRON_UTC",
+    // Signed integer UTC offset (e.g. -6 for MDT) — used to compute local date at cron fire time.
+    "UTC_OFFSET": "0",
   },
 
   // Observability — enables `wrangler tail` and the Logs tab in the CF dashboard.

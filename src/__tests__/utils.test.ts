@@ -21,23 +21,25 @@ describe("updateWranglerCrons", () => {
     vi.clearAllMocks()
   })
 
-  it("replaces existing crons array and existing MORNING_CRON / EVENING_CRON vars", () => {
+  it("replaces existing crons array and existing MORNING_CRON / EVENING_CRON / UTC_OFFSET vars", () => {
     const input = `{
   "triggers": { "crons": ["30 15 * * *", "0 2 * * *"] },
   "vars": {
     "MORNING_CRON": "30 15 * * *",
-    "EVENING_CRON": "0 2 * * *"
+    "EVENING_CRON": "0 2 * * *",
+    "UTC_OFFSET": "-5"
   }
 }`
     mockFs.readFileSync.mockReturnValue(input)
     mockFs.writeFileSync.mockReturnValue(undefined)
 
-    updateWranglerCrons("/wrangler.jsonc", "0 14 * * *", "0 1 * * *")
+    updateWranglerCrons("/wrangler.jsonc", "0 14 * * *", "0 1 * * *", -5)
 
     const written = mockFs.writeFileSync.mock.calls[0]![1] as string
     expect(written).toContain('"crons": ["0 14 * * *", "0 1 * * *"]')
     expect(written).toContain('"MORNING_CRON": "0 14 * * *"')
     expect(written).toContain('"EVENING_CRON": "0 1 * * *"')
+    expect(written).toContain('"UTC_OFFSET": "-5"')
   })
 
   it("inserts MORNING_CRON and EVENING_CRON when vars block has no existing cron vars", () => {
@@ -50,12 +52,13 @@ describe("updateWranglerCrons", () => {
     mockFs.readFileSync.mockReturnValue(input)
     mockFs.writeFileSync.mockReturnValue(undefined)
 
-    updateWranglerCrons("/wrangler.jsonc", "30 15 * * *", "0 2 * * *")
+    updateWranglerCrons("/wrangler.jsonc", "30 15 * * *", "0 2 * * *", -6)
 
     const written = mockFs.writeFileSync.mock.calls[0]![1] as string
     expect(written).toContain('"crons": ["30 15 * * *", "0 2 * * *"]')
     expect(written).toContain('"MORNING_CRON": "30 15 * * *"')
     expect(written).toContain('"EVENING_CRON": "0 2 * * *"')
+    expect(written).toContain('"UTC_OFFSET": "-6"')
   })
 })
 

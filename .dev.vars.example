@@ -5,3 +5,4 @@ STRAVA_REFRESH_TOKEN=your_strava_refresh_token
 RESEND_API_KEY=your_resend_api_key
 REPORT_RECIPIENT=your@email.com
 REPORT_FROM=reports@yourdomain.com
+UTC_OFFSET=-6

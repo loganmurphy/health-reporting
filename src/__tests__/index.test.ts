@@ -34,6 +34,7 @@ function makeEnv() {
     REPORT_FROM: "reports@example.com",
     MORNING_CRON: "30 15 * * *",
     EVENING_CRON: "0 2 * * *",
+    UTC_OFFSET: "-6",
   }
 }
 
@@ -86,23 +87,37 @@ describe("scheduled handler", () => {
     )
   })
 
-  it("passes today's date to morning report", async () => {
-    const event = { cron: "30 15 * * *", scheduledTime: Date.now() } as ScheduledEvent
+  it("passes local date (adjusted for UTC_OFFSET) to morning report", async () => {
+    const scheduledTime = Date.now()
+    const event = { cron: "30 15 * * *", scheduledTime } as ScheduledEvent
     await worker.scheduled(event, makeEnv(), makeCtx())
 
-    const today = new Date().toISOString().slice(0, 10)
+    const expected = new Date(scheduledTime + -6 * 3600 * 1000).toISOString().slice(0, 10)
     const [, calledToday] = (morning.buildMorningReport as ReturnType<typeof vi.fn>).mock
       .calls[0] as [unknown, string]
-    expect(calledToday).toBe(today)
+    expect(calledToday).toBe(expected)
   })
 
-  it("passes today's date to evening report", async () => {
-    const event = { cron: "0 2 * * *", scheduledTime: Date.now() } as ScheduledEvent
+  it("passes local date (adjusted for UTC_OFFSET) to evening report", async () => {
+    const scheduledTime = Date.now()
+    const event = { cron: "0 2 * * *", scheduledTime } as ScheduledEvent
     await worker.scheduled(event, makeEnv(), makeCtx())
 
-    const today = new Date().toISOString().slice(0, 10)
+    const expected = new Date(scheduledTime + -6 * 3600 * 1000).toISOString().slice(0, 10)
     const [, calledToday] = (evening.buildEveningReport as ReturnType<typeof vi.fn>).mock
       .calls[0] as [unknown, string]
-    expect(calledToday).toBe(today)
+    expect(calledToday).toBe(expected)
+  })
+
+  it("defaults UTC_OFFSET to 0 when not set", async () => {
+    const scheduledTime = Date.now()
+    const event = { cron: "30 15 * * *", scheduledTime } as ScheduledEvent
+    const env = { ...makeEnv(), UTC_OFFSET: undefined as unknown as string }
+    await worker.scheduled(event, env, makeCtx())
+
+    const expected = new Date(scheduledTime).toISOString().slice(0, 10)
+    const [, calledToday] = (morning.buildMorningReport as ReturnType<typeof vi.fn>).mock
+      .calls[0] as [unknown, string]
+    expect(calledToday).toBe(expected)
   })
 })
