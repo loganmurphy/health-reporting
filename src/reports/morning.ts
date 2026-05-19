@@ -212,18 +212,18 @@ ${weekActivities.map((a) => `- ${String(a["name"] ?? "")} | ${fmtMiles(a["distan
 ${topContributors ? `<p style="margin-top:10px;font-size:13px;color:#6b7280;">Contributors: ${topContributors}</p>` : ""}
 
 <h2>Sleep & Readiness Trend</h2>
-<table>
+<div class="table-wrap"><table>
   <thead><tr><th>Date</th><th>Sleep</th><th>Readiness</th></tr></thead>
   <tbody>${weekTrendRows}</tbody>
-</table>
+</table></div>
 
 ${
   detailedYesterday.length > 0
     ? `<h2>Yesterday's Training</h2>
-<table>
+<div class="table-wrap"><table>
   <thead><tr><th>Activity</th><th>Type</th><th>Distance</th><th>Duration</th><th>Avg HR</th><th>Avg Power</th></tr></thead>
   <tbody>${detailedYesterday.map(buildActivityRow).join("\n")}</tbody>
-</table>`
+</table></div>`
     : "<h2>Yesterday</h2><p>Rest day — no activities recorded.</p>"
 }
 
@@ -231,10 +231,10 @@ ${
   weekActivities.length > 0
     ? `<h2>Week So Far</h2>
 <p><strong>${weekActivities.length} activities</strong> · ${weekTotalMiles.toFixed(2)} mi · ${fmtDuration(weekTotalTime)}</p>
-<table>
+<div class="table-wrap"><table>
   <thead><tr><th>Activity</th><th>Type</th><th>Distance</th><th>Duration</th><th>Avg HR</th><th>Avg Power</th></tr></thead>
   <tbody>${weekActivities.map(buildActivityRow).join("\n")}</tbody>
-</table>`
+</table></div>`
     : ""
 }
 
