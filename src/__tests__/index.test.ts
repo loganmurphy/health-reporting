@@ -108,4 +108,16 @@ describe("scheduled handler", () => {
       .calls[0] as [unknown, string]
     expect(calledToday).toBe(expected)
   })
+
+  it("defaults UTC_OFFSET to 0 when not set", async () => {
+    const scheduledTime = Date.now()
+    const event = { cron: "30 15 * * *", scheduledTime } as ScheduledEvent
+    const env = { ...makeEnv(), UTC_OFFSET: undefined as unknown as string }
+    await worker.scheduled(event, env, makeCtx())
+
+    const expected = new Date(scheduledTime).toISOString().slice(0, 10)
+    const [, calledToday] = (morning.buildMorningReport as ReturnType<typeof vi.fn>).mock
+      .calls[0] as [unknown, string]
+    expect(calledToday).toBe(expected)
+  })
 })

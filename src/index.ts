@@ -23,7 +23,7 @@ export default {
   },
 
   async scheduled(event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
-    const utcOffset = parseInt(env.UTC_OFFSET ?? "0", 10)
+    const utcOffset = parseInt(env.UTC_OFFSET ?? "0", 10) || 0
     const today = new Date(event.scheduledTime + utcOffset * 3600 * 1000).toISOString().slice(0, 10)
     const isMorning = event.cron === env.MORNING_CRON
 

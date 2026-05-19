@@ -21,12 +21,13 @@ describe("updateWranglerCrons", () => {
     vi.clearAllMocks()
   })
 
-  it("replaces existing crons array and existing MORNING_CRON / EVENING_CRON vars", () => {
+  it("replaces existing crons array and existing MORNING_CRON / EVENING_CRON / UTC_OFFSET vars", () => {
     const input = `{
   "triggers": { "crons": ["30 15 * * *", "0 2 * * *"] },
   "vars": {
     "MORNING_CRON": "30 15 * * *",
-    "EVENING_CRON": "0 2 * * *"
+    "EVENING_CRON": "0 2 * * *",
+    "UTC_OFFSET": "-5"
   }
 }`
     mockFs.readFileSync.mockReturnValue(input)
