@@ -55,14 +55,16 @@ function wrapInTemplate(html: string): string {
     .verdict { background: #f0fdf4; border-left: 4px solid #22c55e; border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 16px 0; }
     .verdict p { margin: 0; }
     .footer { margin-top: 28px; font-size: 12px; color: #9ca3af; text-align: center; }
-    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 12px; }
-    table { width: 100%; border-collapse: collapse; min-width: 420px; }
-    th { text-align: left; font-size: 12px; color: #6b7280; font-weight: 600; padding: 6px 8px; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
-    td { padding: 7px 8px; font-size: 14px; border-bottom: 1px solid #f3f4f6; white-space: nowrap; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+    th { text-align: left; font-size: 12px; color: #6b7280; font-weight: 600; padding: 6px 8px; border-bottom: 1px solid #e5e7eb; }
+    td { padding: 7px 8px; font-size: 14px; border-bottom: 1px solid #f3f4f6; }
     tr:last-child td { border-bottom: none; }
-    @media (max-width: 600px) {
+    .col-hide { }
+    @media (max-width: 480px) {
       .card { padding: 20px 16px; }
       .metric { display: block; margin-bottom: 8px; }
+      .col-hide { display: none; }
+      td, th { padding: 6px 5px; font-size: 13px; }
     }
   </style>
 </head>

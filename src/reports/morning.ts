@@ -58,7 +58,7 @@ function buildActivityRow(a: StravaActivity): string {
   const hr =
     typeof a["average_heartrate"] === "number" ? `${Math.round(a["average_heartrate"])} bpm` : "—"
   const watts = typeof a["average_watts"] === "number" ? `${Math.round(a["average_watts"])}w` : "—"
-  return `<tr><td>${name}</td><td>${type}</td><td>${miles}</td><td>${dur}</td><td>${hr}</td><td>${watts}</td></tr>`
+  return `<tr><td>${name}</td><td class="col-hide">${type}</td><td>${miles}</td><td>${dur}</td><td>${hr}</td><td class="col-hide">${watts}</td></tr>`
 }
 
 export async function buildMorningReport(
@@ -221,7 +221,7 @@ ${
   detailedYesterday.length > 0
     ? `<h2>Yesterday's Training</h2>
 <div class="table-wrap"><table>
-  <thead><tr><th>Activity</th><th>Type</th><th>Distance</th><th>Duration</th><th>Avg HR</th><th>Avg Power</th></tr></thead>
+  <thead><tr><th>Activity</th><th class="col-hide">Type</th><th>Distance</th><th>Duration</th><th>Avg HR</th><th class="col-hide">Avg Power</th></tr></thead>
   <tbody>${detailedYesterday.map(buildActivityRow).join("\n")}</tbody>
 </table></div>`
     : "<h2>Yesterday</h2><p>Rest day — no activities recorded.</p>"
@@ -232,7 +232,7 @@ ${
     ? `<h2>Week So Far</h2>
 <p><strong>${weekActivities.length} activities</strong> · ${weekTotalMiles.toFixed(2)} mi · ${fmtDuration(weekTotalTime)}</p>
 <div class="table-wrap"><table>
-  <thead><tr><th>Activity</th><th>Type</th><th>Distance</th><th>Duration</th><th>Avg HR</th><th>Avg Power</th></tr></thead>
+  <thead><tr><th>Activity</th><th class="col-hide">Type</th><th>Distance</th><th>Duration</th><th>Avg HR</th><th class="col-hide">Avg Power</th></tr></thead>
   <tbody>${weekActivities.map(buildActivityRow).join("\n")}</tbody>
 </table></div>`
     : ""

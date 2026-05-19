@@ -85,7 +85,7 @@ function buildWeekRow(a: StravaActivity): string {
     typeof a["average_heartrate"] === "number" ? `${Math.round(a["average_heartrate"])} bpm` : "—"
   const watts = typeof a["average_watts"] === "number" ? `${Math.round(a["average_watts"])}w` : "—"
   const startDate = String(a["start_date_local"] ?? "").slice(0, 10)
-  return `<tr><td>${fmtDate(startDate)}</td><td>${name}</td><td>${type}</td><td>${miles}</td><td>${dur}</td><td>${hr}</td><td>${watts}</td></tr>`
+  return `<tr><td>${fmtDate(startDate)}</td><td>${name}</td><td class="col-hide">${type}</td><td>${miles}</td><td>${dur}</td><td>${hr}</td><td class="col-hide">${watts}</td></tr>`
 }
 
 export async function buildEveningReport(
@@ -226,7 +226,7 @@ ${
     ? `<h2>Week So Far</h2>
 <p><strong>${weekStravaActivities.length} activities</strong> · ${weekTotalMiles.toFixed(2)} mi · ${fmtDuration(weekTotalTime)}</p>
 <div class="table-wrap"><table>
-  <thead><tr><th>Date</th><th>Activity</th><th>Type</th><th>Distance</th><th>Duration</th><th>Avg HR</th><th>Avg Power</th></tr></thead>
+  <thead><tr><th>Date</th><th>Activity</th><th class="col-hide">Type</th><th>Distance</th><th>Duration</th><th>Avg HR</th><th class="col-hide">Avg Power</th></tr></thead>
   <tbody>${weekStravaActivities.map(buildWeekRow).join("\n")}</tbody>
 </table></div>`
     : ""
